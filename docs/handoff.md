@@ -43,3 +43,12 @@ deck/fill.py --pdf`). The demo take is `demo/run3` (not committed; `demo/run*/` 
   identical verdicts and sources every run; p(supported) differed by at most 0.012.
 - The deck also lives as an editable Slides artifact (private): https://claude.ai/artifact/ALHmZsy5gHT8h3eMdeecJL.
   `deck/` remains the generated HTML/PDF version.
+
+## Update 14 Nov, late afternoon: the race page
+
+- `race/` is a live demo: three lanes (Drex, vector search, GPT-5.6 Sol or another baseline) race on the same claims;
+  click a claim to see each lane's evidence, including what RAG retrieved. Upload PDFs to race your own case.
+- Run: `PYTHONPATH=. ~/.local/share/uv/tools/intern-agent/bin/python race/server.py`, open http://127.0.0.1:8765.
+- Measured numbers are in docs/evals.md E8 and `bench/results/race.json`; the deck artifact has a race slide and a
+  data slide (public and synthetic sources, court records as the next benchmark).
+- `race/uploads/` holds uploaded PDFs and is git-ignored. Paid calls stop at SPEND_CAP_USD ($1) per server run.

@@ -108,3 +108,25 @@ extraction, and key parsing. Extractor recall is not yet measured.
 - E6: outcome label vs the decision's own ORDER line (regex, `tests/test_aao.py`). O-1: 582/595 agree; EB-1A: 450/450.
   Caveat: criterion labels and main reason are model labels (Gemma 4 31B), not checked by hand.
 - E7: 47 synthetic claims × 5 runs: identical verdicts and sources; max p(supported) difference 0.012.
+
+## E8. The three-lane race (race/server.py, race/measure.py)
+
+- What: the same claims checked by Drex, vector search (RAG: ~400-char chunks, Qwen3-Embedding-8B, top-3 per claim,
+  GPT-5.6 Sol judge) and GPT-5.6 Sol reading the whole case, started together. Synthetic data: the 10 labelled cases
+  (153 claims) and the Intern demo draft (run3 round 1, 26 claims, no hand labels).
+- Expected: Drex at least as accurate as RAG, within noise of the frontier lane, faster and cheaper than both.
+- Result (one run each, 14 Nov, `bench/results/race.json`): Drex 151/153 correct, p50 0.53 s, $0.00026 per petition;
+  GPT-5.6 Sol 152/153, 2.29 s, $0.015; RAG 143/153, 3.46 s, $0.020. 8 of RAG's 10 misses are supported claims marked
+  unsupported because the proving exhibit was not retrieved. On the demo draft's "team of dozens" claim only Drex
+  answered contradicted (org chart: 6-person pod); there is no hand label for it.
+- Caveats: one run; live latency varies (single page races ranged 0.5-0.7 s Drex, 2-4 s GPT-5.6 Sol, 3-12 s RAG); the
+  petition set is easy (frontier models score ~1.0), so it shows speed, cost and RAG's retrieval misses, not a ranking.
+- Tests: `tests/test_race_server.py` (Host/Origin, exhibit lookup, spend cap, multipart, file names),
+  `tests/test_rag.py` (chunking, top-k, prompt layout).
+- Live cost also varies: repeat races of the same case cost GPT-5.6 Sol about $0.007 instead of $0.015, likely
+  provider-side prompt caching. The page shows each run's own reported cost.
+- Independent review (separate agent): no security findings. Fixed, each with a regression test in
+  `tests/test_race_server.py`: frontier request count now reports real attempts; spend is reserved before a call (three
+  lanes can no longer overrun the cap together) and a failed call is charged its estimate; upload parse cost is summed
+  per upload, not from a shared log; negative Content-Length returns 400. In `race/app.js`: no speed/cost ratio when a
+  lane returned only errors; `?mock=1` results are captioned "MOCK DATA" (no JS test harness; checked by hand).

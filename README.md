@@ -72,6 +72,17 @@ PYTHONPATH=../.. intern -p --system1 drex-latest --system2 deepinfra/Qwen/Qwen3.
   --extension ctm_drex.intern_ext:CtmReceipts "$(cat TASK.md)"
 ```
 
+### The race page
+
+```bash
+PYTHONPATH=. python race/server.py        # http://127.0.0.1:8765 ; ?mock=1 runs without keys
+PYTHONPATH=. python race/measure.py       # all cases, three lanes at once -> bench/results/race.json
+```
+
+Three lanes check the same claims at the same instant: Drex (all exhibits held as one state), vector search (top-3
+chunks per claim from Qwen3-Embedding-8B, judged by GPT-5.6 Sol) and a frontier model reading the whole case. Upload
+exhibit PDFs and a draft to race your own case (NDI parses them first). Paid calls stop at $1 per server run.
+
 Claude baselines run through the Claude Code CLI (`claude -p`); open and other models through OpenAI-compatible
 APIs (DeepInfra, OpenRouter), with the same prompt and parser.
 

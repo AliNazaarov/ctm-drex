@@ -110,16 +110,18 @@ async def _wait(client: httpx.AsyncClient, job: dict) -> dict:
     return job
 
 
-async def _run(client: httpx.AsyncClient, tool: str, body: dict) -> dict:
+async def _run(client: httpx.AsyncClient, tool: str, body: dict, cost_sink: list[float] | None = None) -> dict:
     global last_cost, last_timing
     r = await client.post(f"{CONSOLE_URL}/documents/{tool}", params={"wait_seconds": 60}, headers=_headers(), json=body)
     _raise(r, tool)
     job = await _wait(client, r.json())
     last_cost, last_timing = job.get("cost"), job.get("timing")
+    if cost_sink is not None and last_cost and last_cost.get("total_usd") is not None:
+        cost_sink.append(float(last_cost["total_usd"]))
     return job
 
 
-async def parse_pdf(path: str | Path, *, refresh: bool = False) -> str:
+async def parse_pdf(path: str | Path, *, refresh: bool = False, cost_sink: list[float] | None = None) -> str:
     """Markdown of the document; read from `<name>.ndi.md` when it is there."""
     pdf = Path(path)
     cache = cache_path(pdf)
@@ -127,7 +129,8 @@ async def parse_pdf(path: str | Path, *, refresh: bool = False) -> str:
         return cache.read_text()
     async with httpx.AsyncClient(timeout=120) as client:
         source = await _upload(client, pdf)
-        job = await _run(client, "parse", {"source": source, "parse_mode": PARSE_MODE, "output": {"formats": ["markdown"]}})
+        job = await _run(client, "parse", {"source": source, "parse_mode": PARSE_MODE, "output": {"formats": ["markdown"]}},
+                         cost_sink)
     doc = (job.get("result") or {}).get("document") or {}
     text = doc.get("markdown") or doc.get("text") or ""
     if not text:
