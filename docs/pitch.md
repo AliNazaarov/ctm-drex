@@ -1,3 +1,5 @@
+> Earlier 5-minute version. The current 2-minute script is [pitch-script-and-QA.md](pitch-script-and-QA.md).
+
 # Pitch: 5 minutes, Apex Predator track
 
 1. **The problem (30 s).** A founder's O-1A petition makes ~40 claims backed by ~30 exhibits. One claim that

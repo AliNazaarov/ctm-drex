@@ -6,6 +6,7 @@ __pycache__/
 *.ndi.md.tmp
 data/aggrefact/
 demo/run*/
+!demo/run3/
 *.ndi.json
 bench/results/*.lock
 bench/results/*.tmp

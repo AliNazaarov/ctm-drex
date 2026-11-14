@@ -86,6 +86,13 @@ exhibit PDFs and a draft to race your own case (NDI parses them first). Paid cal
 Claude baselines run through the Claude Code CLI (`claude -p`); open and other models through OpenAI-compatible
 APIs (DeepInfra, OpenRouter), with the same prompt and parser.
 
+## Pitch materials
+
+- [Problem one-pager](docs/problem-one-pager.pdf): how many petitions fail and why, with sources.
+- [8-slide pitch deck](deck/ctm-pitch-8.pdf) ([HTML](deck/ctm-pitch-8.html)) and the [full 16-slide deck with appendix](deck/ctm-pitch-full.pdf) ([HTML](deck/ctm-pitch-full.html)).
+- [2-minute pitch script and Q&A](docs/pitch-script-and-QA.md) and the [demo video shot list](docs/demo-video-recording.md).
+- Demo inputs: the six synthetic exhibit PDFs in [demo/run3/exhibits-pdf](demo/run3/exhibits-pdf) and the round-1 draft [demo/run3/petition-draft-round1.md](demo/run3/petition-draft-round1.md), for the race page's Upload button.
+
 ## Licence
 
 MIT
