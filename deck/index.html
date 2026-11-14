@@ -262,6 +262,22 @@
     </div>
   </div>
   <div class="foot">ⓘ Motivating firm: Expedite, an AI-native startup law firm. It is not a user of this build; every case here is synthetic.</div>
+  <div class="pn">01</div>
+</section>
+
+<!-- 2b EVIDENCE: real USCIS appeal decisions -->
+<section class="slide">
+  <div class="label">The evidence</div>
+  <h2>We read {{aao_n}} real USCIS appeal decisions: <em>{{aao_backed_pct}} of failures were claims the evidence didn't back</em></h2>
+  <div class="tele">
+    <div style="grid-column: span 2"><div class="ctitle" style="margin-bottom:6px">Criteria the officer found <b>not met</b>, O-1 and EB-1A appeals</div>[[aao_bars]]</div>
+    <div class="stack">
+      <div class="stat dark"><div class="big">{{aao_dismissed_pct}}</div><p>of appeals dismissed, read from each decision's own ORDER line</p></div>
+      <div class="stat"><div class="big">{{aao_backed_pct}}</div><p>of failed petitions: evidence didn't show what the petition claimed. CTM checks this before filing.</p></div>
+      <div class="stat"><div class="big">{{aao_cost}}</div><p>to label {{aao_o1}} O-1 + {{aao_eb1}} EB-1A decisions</p></div>
+    </div>
+  </div>
+  <div class="foot">ⓘ Public AAO non-precedent decisions on uscis.gov. Appeals are denied petitions, not all filings. Labels by {{aao_model}}, one read per decision; its outcome agrees with the ORDER line in {{aao_agree}}. Nace console was unavailable during labelling, so Drex did not label these.</div>
   <div class="pn">02</div>
 </section>
 

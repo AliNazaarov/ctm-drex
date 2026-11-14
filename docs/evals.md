@@ -102,3 +102,9 @@ A separate reviewer (not the author) found 10 issues; all were fixed: number par
 verdicts, silent missing Drex answers, claim alignment and split leakage, unfair comparison (Haiku now gets the same
 number rule), latency and retry handling, one failure losing a whole run, the Intern gate failing open, claim
 extraction, and key parsing. Extractor recall is not yet measured.
+
+## E6. Real USCIS appeal decisions (labelling quality) and E7. determinism
+
+- E6: outcome label vs the decision's own ORDER line (regex, `tests/test_aao.py`). O-1: 582/595 agree; EB-1A: 450/450.
+  Caveat: criterion labels and main reason are model labels (Gemma 4 31B), not checked by hand.
+- E7: 47 synthetic claims × 5 runs: identical verdicts and sources; max p(supported) difference 0.012.

@@ -28,3 +28,18 @@ deck/fill.py --pdf`). The demo take is `demo/run3` (not committed; `demo/run*/` 
 - The synthetic petition set is too easy to rank models (most score ~1.00); a harder set is the next eval.
 - LLM-AggreFact data is not committed (CC BY-ND); `bench/aggrefact.py sample` rebuilds the sample from a parquet.
 - The number rule ignores legal citations; dates written in words are not compared.
+
+## Update 14 Nov, afternoon: real USCIS decisions and determinism
+
+- `scripts/aao_scrape.py` downloads public AAO non-precedent decisions from uscis.gov, no login, 0.7 s between requests:
+  620 O-1 (category 4) into `data/aao/` and the newest 1,000 of 5,262 EB-1A (category 19) into `data/aao_19/`. Both
+  folders are gitignored; only the aggregates in `bench/results/aao_stats.json` are committed.
+- `scripts/aao_label.py` labels each decision once (Gemma 4 31B on DeepInfra; Drex's console was returning 403 then):
+  form, outcome, each criterion met / not met / not addressed, main reason. The outcome is cross-checked against the
+  decision's own ORDER line (code, not the model): 582 of 595 O-1 agree. O-1: 619 labelled, $0.68; 63% of failed
+  petitions (381 of 607) failed because the evidence did not show what the petition claimed. EB-1A: 450 labelled,
+  $0.57, 52%. 550 downloaded EB-1A decisions are not labelled yet (`aao_label.py label data/aao_19` resumes).
+- Determinism (`bench/results/determinism.json`): 3 synthetic cases, 47 claims, 5 runs each through `check_claims`:
+  identical verdicts and sources every run; p(supported) differed by at most 0.012.
+- The deck also lives as an editable Slides artifact (private): https://claude.ai/artifact/ALHmZsy5gHT8h3eMdeecJL.
+  `deck/` remains the generated HTML/PDF version.

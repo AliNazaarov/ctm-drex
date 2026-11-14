@@ -569,6 +569,39 @@ def build() -> tuple[dict[str, str], dict[str, str]]:
         v["ndi_drex_correct"] = f"{round(cp['accuracy'] * cp['n'])}/{cp['n']}"
     else:
         v["ndi_drex_correct"] = MISSING
+
+    # --- real USCIS AAO appeal decisions (scripts/aao_scrape.py + aao_label.py -> bench/results/aao_stats.json)
+    aao = load(RESULTS / "aao_stats.json")
+    sets = [d for d in aao.values() if isinstance(d, dict) and d.get("parsed")]
+    if sets:
+        n = sum(d["parsed"] for d in sets)
+        v["aao_n"] = f"{n:,}"
+        v["aao_o1"] = f"{aao.get('aao', {}).get('parsed', 0):,}"
+        v["aao_eb1"] = f"{aao.get('aao_19', {}).get('parsed', 0):,}"
+        v["aao_cost"] = usd(sum(d["cost_usd"] for d in sets))
+        v["aao_model"] = esc(", ".join(sorted({(d.get("model") or "").split("/")[-1] for d in sets})))
+        orders = [d["outcome_by_order_line"] for d in sets]
+        decided = sum(c.get(k, 0) for c in orders for k in ("dismissed", "sustained", "remanded", "rejected", "withdrawn"))
+        dismissed = sum(c.get("dismissed", 0) + c.get("rejected", 0) for c in orders)
+        v["aao_dismissed_pct"] = f"{100 * dismissed / decided:.0f}%" if decided else MISSING
+        reasons = {}
+        for d in sets:
+            for k, c in d["main_reason"].items():
+                reasons[k] = reasons.get(k, 0) + c
+        failed = sum(c for k, c in reasons.items() if k not in ("other", "None", None))
+        v["aao_backed_pct"] = f"{100 * reasons.get('claims_not_backed', 0) / failed:.0f}%" if failed else MISSING
+        a = [tuple(map(int, d["model_agrees_with_order_line"].split("/"))) for d in sets]
+        v["aao_agree"] = f"{sum(x for x, _ in a):,} of {sum(y for _, y in a):,}" if a else MISSING
+        names = {"awards": "Awards", "membership": "Memberships", "press": "Press about them", "judging": "Judging others",
+                 "contributions": "Original contributions", "articles": "Scholarly articles", "exhibitions": "Exhibitions",
+                 "critical_role": "Critical role", "salary": "High salary", "commercial": "Commercial success"}
+        nm = {k: sum(d["criteria"].get(k, {}).get("not_met", 0) for d in sets) for k in names}
+        rows = sorted(((names[k], c, f"{c:,}", i < 3) for i, (k, c) in enumerate(sorted(nm.items(), key=lambda kv: -kv[1])) if c), key=lambda r: -r[1])
+        b["aao_bars"] = hbars(rows, width=900, row_h=min(40, 460 // max(1, len(rows))), label_w=240, value_w=80)
+    else:
+        for k in ("aao_n", "aao_o1", "aao_eb1", "aao_cost", "aao_model", "aao_dismissed_pct", "aao_backed_pct", "aao_agree"):
+            v[k] = MISSING
+        b["aao_bars"] = MISSING
     return v, b
 
 
