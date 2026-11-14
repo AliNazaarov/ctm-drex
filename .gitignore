@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.env
+.intern/
+.venv/
+*.ndi.md.tmp
+data/aggrefact/
+demo/run*/
+*.ndi.json
+bench/results/*.lock
+bench/results/*.tmp
+bench/results/drex_raw_v1.json
