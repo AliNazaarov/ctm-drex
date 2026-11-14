@@ -1,20 +1,20 @@
 # Drexathon submission: team CTM
 
-**Title:** CTM: Drex checks every claim in a visa petition
+**Title:** CTM: the agent team for immigration attorneys, with Drex checking every sentence
 
-**Track:** Apex Predator
+**Track:** Apex Predator (Drex vs the Giants)
+
+**GitHub:** https://github.com/AliNazaarov/ctm-drex
 
 ## Explanation (for the form)
 
-AI agents now draft founders' O-1A visa petitions. Each petition makes about 40 claims that its exhibits must
-prove, and one unproven or contradicted claim triggers a USCIS Request for Evidence: months of delay. Today
-a frontier model re-reads the whole case to judge each claim: slow, costly, run once at the end. CTM gives those
-decisions to Drex. NDI turns exhibit PDFs into one shared state, and Drex judges eight claims per forward pass:
-proven (with the exhibit), contradicted, or client-stated only. Code checks numbers; one threshold is fitted
-on a dev split. As an Intern extension, CTM reopens the run so the agent fixes flagged claims before a
-human sees them. The attorney then reads a 15-line receipt.
-
-<!-- 120 words. No result numbers here; they are on the deck's results slides. -->
+An O-1A visa packet runs to about 800 pages, and one claim its exhibits don't prove triggers a Request for
+Evidence: months of delay. Agents can draft the packet, but they write confident sentences the exhibits don't
+back, and checking every sentence with a frontier model is too slow and costly. CTM runs inside Intern: Qwen on
+DeepInfra drafts (System 2), Drex is System 1 and the finish gate. NDI parses the PDF exhibits; Drex reads them
+once and judges up to 16 questions per pass: proven (with its exhibit), contradicted, or client-stated only.
+Flagged claims reopen the run; the attorney signs a one-page receipt. Against 14 models on LLM-AggreFact, Drex is
+the cheapest and fastest and ties for fewest bad claims let through.
 
 ## Demo screen recording (60 to 90 seconds)
 
@@ -22,13 +22,11 @@ Synthetic demo case (`demo/case-demo`): fictional founder, fictional exhibits.
 
 | Time | On screen | Voice-over |
 |---|---|---|
-| 0:00–0:08 | `demo/case-demo/exhibits/` in Finder or the terminal: offer letter, org chart, press | "This is a synthetic O-1A case: a founder and the exhibits that have to prove every claim in her petition." |
-| 0:08–0:22 | Terminal: the `intern -p --system1 drex-latest --system2 deepinfra/Qwen/Qwen3.8-27B --extension ctm_drex.intern_ext:CtmReceipts ...` command from the README, then Intern streaming the draft | "Intern drafts the Critical Role and High Remuneration sections with Qwen on DeepInfra. CTM is loaded as an Intern extension." |
-| 0:22–0:32 | The first draft open, the team-size and salary sentences highlighted | "Like most drafting agents, it overstates: a bigger team and a higher salary than the exhibits show." |
-| 0:32–0:47 | `ctm-receipt.md`, first round: CONTRADICTED and CLIENT-STATED ONLY lines | "When the agent says it's done, Drex checks every sentence against the exhibits. Two claims fail, each with the exhibit and the reason. The number rule catches a figure the org chart never states." |
-| 0:47–1:00 | Intern reopening the run with the receipt, then the revised sentences | "CTM reopens the run once and hands the agent the receipt. It rewrites only the flagged claims." |
-| 1:00–1:12 | Second `ctm-receipt.md`: every line PROVEN with its exhibit | "The second draft passes. Every claim is proven, and every line names its exhibit." |
-| 1:12–1:20 | Receipt beside the full draft and exhibit folder | "The attorney reads this 15-line receipt instead of the whole case. The frontier model writes; Drex checks every sentence as it's written." |
+| 0:00–0:08 | `demo/run3/exhibits/`: offer letter, press article, org chart, payroll, email, field report | "A synthetic O-1A case: a founding engineer and the six exhibits that must prove every claim." |
+| 0:08–0:25 | Terminal: the `intern -p --system1 drex-latest --system2 deepinfra/Qwen/Qwen3.8-27B --extension ctm_drex.intern_ext:CtmReceipts` run, Qwen reading exhibits and writing the draft | "Intern drafts with Qwen on DeepInfra. Drex is its System 1, and CTM is loaded as the finish gate." |
+| 0:25–0:45 | `ctm-receipt.md`, Round 1: 26 claims in 0.52 s, claim 8 CONTRADICTED | "When the agent says it's done, Drex checks all 26 sentences in half a second. The press quote says she built a team of dozens; the org chart says a six-person pod. Contradicted." |
+| 0:45–1:00 | Intern reopening the run; Qwen's summary of the fixes | "CTM reopens the run once. The agent removes the overstatement and cites or marks every flagged sentence." |
+| 1:00–1:15 | Round 2: 26 claims in 0.45 s, "0 claim(s) need evidence or a rewrite; 1 already marked for the client" | "Round two: nothing left to rewrite, and one item the client must prove. The attorney signs this page instead of reading the case." |
 
 Recording notes: record at 1920×1080, terminal font 18 pt or larger, crop to the window. Run the case once
 beforehand so both receipts exist, and cut the model's waiting time rather than speeding it up. State timings
